@@ -1,324 +1,352 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
-const phases = [
-  { num: 'I', name: 'Spark', tagline: 'The idea ignites', desc: 'Post a logline. Crew vouches. Heat score builds. 50 vouches unlocks the Blueprint.', gate: '50 verified vouches' },
-  { num: 'II', name: 'Blueprint', tagline: 'The plan takes shape', desc: 'Script, mood board, IP reference, milestones, crew roster. Director marks it complete.', gate: 'Director marks Blueprint Complete' },
-  { num: 'III', name: 'Market', tagline: 'The crew assembles', desc: 'Proximity Engine matches nearby crew. Gear meets need. Diptych portfolios reviewed.', gate: 'All required crew roles confirmed' },
-  { num: 'IV', name: 'Patronage', tagline: 'The film gets funded', desc: 'Line-item funding opens. Fans back specific budget items in escrow. Funds release on milestone proof.', gate: 'Principal photography wrapped' },
+// Film quotes for the marquee
+const filmQuotes = [
+  '"The only way to get rid of my fears is to make films about them." — Alfred Hitchcock',
+  '"Cinema is a matter of what\'s in the frame and what\'s out." — Martin Scorsese',
+  '"I don\'t dream at night, I dream at day, I dream all day." — Steven Spielberg',
+  '"Film is incredibly democratic and accessible, it\'s probably the best option." — Tilda Swinton',
+  '"A film is — or should be — more like music than like fiction." — Stanley Kubrick',
+  '"Making a film means, first of all, to tell a story." — Michelangelo Antonioni',
 ]
 
-const stats = [
-  { value: '4', label: 'Lifecycle Phases' },
-  { value: '2K+', label: 'Public Domain Works' },
-  { value: '50mi', label: 'Crew Radius' },
-  { value: '0%', label: 'Fee on Failures' },
+// A24-inspired filmography
+const filmography = [
+  { year: '2024', title: 'Past Lives', dir: 'Celine Song' },
+  { year: '2023', title: 'Poor Things', dir: 'Yorgos Lanthimos' },
+  { year: '2022', title: 'Everything Everywhere', dir: 'Daniel Kwan' },
+  { year: '2019', title: 'Midsommar', dir: 'Ari Aster' },
+  { year: '2017', title: 'Lady Bird', dir: 'Greta Gerwig' },
+  { year: '2016', title: 'Moonlight', dir: 'Barry Jenkins' },
+  { year: '2015', title: 'Ex Machina', dir: 'Alex Garland' },
+  { year: '2014', title: 'Under the Skin', dir: 'Jonathan Glazer' },
 ]
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false)
-  const [activePhase, setActivePhase] = useState(0)
+  const [role, setRole] = useState<'creative' | 'producer' | null>(null)
+  const [scrollY, setScrollY] = useState(0)
+  const heroRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <div className="overflow-hidden">
-      {/* HERO */}
-      <section className="relative min-h-screen flex items-center justify-center">
-        {/* Animated background grain */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-        }} />
+    <div className="film-grain">
+      {/* FILM QUOTE MARQUEE */}
+      <div className="fixed top-16 left-0 right-0 z-40 py-2 border-b border-frame-gray/20 overflow-hidden bg-frame-black/90 backdrop-blur-sm">
+        <div className="marquee-track">
+          {[...filmQuotes, ...filmQuotes].map((q, i) => (
+            <span key={i} className="text-xs text-frame-light/40 whitespace-nowrap mx-12 tracking-wider">{q}</span>
+          ))}
+        </div>
+      </div>
 
-        {/* Gold gradient accent */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-radial from-frame-gold/8 via-transparent to-transparent rounded-full blur-3xl" />
+      {/* HERO — THE CHOICE */}
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center pt-10">
+        {/* Cinematic vignette */}
+        <div className="absolute inset-0 vignette" />
 
-        <div className="relative z-10 text-center max-w-5xl mx-auto px-6">
-          {mounted && (
-            <>
-              <div className="animate-fade-in-up stagger-1 inline-block mb-8 px-5 py-2 border border-frame-gold/20 rounded-full text-frame-gold text-xs tracking-[0.3em] uppercase font-medium">
-                The Operating System for Indie Film
-              </div>
+        {/* Parallax background grain */}
+        <div className="absolute inset-0 opacity-[0.02]" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
+          <div className="w-full h-[120%] bg-gradient-to-b from-frame-gold/[0.03] via-transparent to-transparent" />
+        </div>
 
-              <h1 className="animate-fade-in-up stagger-2 text-7xl md:text-9xl font-bold mb-6 leading-[0.9] tracking-tight">
-                Make the film.<br />
-                <span className="text-frame-gold italic">Now.</span>
-              </h1>
+        <div className="relative z-10 text-center max-w-6xl mx-auto px-6">
+          {/* Slogan reveal */}
+          <div className="mb-8 animate-fade-up initial-hidden delay-100">
+            <span className="mono text-[10px] tracking-[0.5em] text-frame-gold/60 uppercase">The Operating System for Indie Film</span>
+          </div>
 
-              <p className="animate-fade-in-up stagger-3 text-xl md:text-2xl text-frame-light max-w-2xl mx-auto mb-4 font-light">
-                Direct-to-Production Pipeline
+          <h1 className="animate-fade-up initial-hidden delay-200 text-8xl md:text-[10rem] font-bold leading-[0.85] tracking-tight mb-8">
+            Make the<br />
+            <span className="italic text-gradient">film.</span><br />
+            Now.
+          </h1>
+
+          <p className="animate-fade-up initial-hidden delay-300 text-lg text-frame-light max-w-lg mx-auto mb-16 leading-relaxed font-light">
+            Direct-to-production pipeline.<br />
+            From first logline to final delivery.
+          </p>
+
+          {/* THE CHOICE — Two paths */}
+          <div className="animate-fade-up initial-hidden delay-500 grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {/* Creative path */}
+            <a
+              href="/feed"
+              onMouseEnter={() => setRole('creative')}
+              onMouseLeave={() => setRole(null)}
+              className="group relative p-8 rounded-2xl border border-frame-gray/50 bg-frame-dark/50 hover:border-frame-gold/40 transition-all duration-700 card-hover text-left"
+            >
+              <div className="absolute top-6 right-6 mono text-xs text-frame-light/30">01</div>
+              <div className="text-4xl mb-4">🎬</div>
+              <h2 className="text-2xl font-bold mb-2 group-hover:text-frame-gold transition-colors duration-500">I Make Films</h2>
+              <p className="text-sm text-frame-light leading-relaxed mb-4">
+                Post sparks, build blueprints, assemble crews, get funded. 
+                The production OS for filmmakers.
               </p>
-
-              <p className="animate-fade-in-up stagger-4 text-base text-frame-light/60 max-w-xl mx-auto mb-12 leading-relaxed">
-                From first logline to final delivery. One platform replaces X pitching, 
-                LinkedIn crew searches, Kickstarter campaigns, and email chains.
-              </p>
-
-              <div className="animate-fade-in-up stagger-5 flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/spark" className="group relative bg-frame-gold text-frame-black px-10 py-4 rounded-lg text-lg font-semibold hover:bg-frame-gold/90 transition-all duration-300 hover:shadow-[0_0_30px_rgba(201,162,39,0.3)]">
-                  Post a Spark
-                  <span className="absolute inset-0 rounded-lg ring-2 ring-frame-gold/30 ring-offset-2 ring-offset-frame-black opacity-0 group-hover:opacity-100 transition-opacity" />
-                </a>
-                <a href="/feed" className="border border-frame-gray text-frame-cream px-10 py-4 rounded-lg text-lg hover:border-frame-light/50 transition-all duration-300 hover:bg-white/[0.02]">
-                  Explore the Feed
-                </a>
+              <div className="flex items-center gap-2 text-frame-gold text-sm font-medium">
+                <span>Enter as Creative</span>
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </div>
-            </>
-          )}
+            </a>
+
+            {/* Producer path */}
+            <a
+              href="/discover-producer"
+              onMouseEnter={() => setRole('producer')}
+              onMouseLeave={() => setRole(null)}
+              className="group relative p-8 rounded-2xl border border-frame-gray/50 bg-frame-dark/50 hover:border-frame-gold/40 transition-all duration-700 card-hover text-left"
+            >
+              <div className="absolute top-6 right-6 mono text-xs text-frame-light/30">02</div>
+              <div className="text-4xl mb-4">💰</div>
+              <h2 className="text-2xl font-bold mb-2 group-hover:text-frame-gold transition-colors duration-500">I Fund Films</h2>
+              <p className="text-sm text-frame-light leading-relaxed mb-4">
+                Discover vetted projects, fund specific line items, 
+                track productions in real-time.
+              </p>
+              <div className="flex items-center gap-2 text-frame-gold text-sm font-medium">
+                <span>Enter as Producer</span>
+                <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+            </a>
+          </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-frame-light/30">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-in delay-800">
+          <span className="text-[10px] tracking-[0.3em] text-frame-light/30 uppercase">Scroll</span>
+          <div className="w-px h-8 bg-gradient-to-b from-frame-light/30 to-transparent animate-pulse" />
         </div>
       </section>
 
-      {/* STATS BAR */}
-      <section className="border-y border-frame-gray/50 py-12">
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((s, i) => (
-            <div key={i} className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-frame-gold mb-1">{s.value}</div>
-              <div className="text-sm text-frame-light tracking-wide uppercase">{s.label}</div>
+      {/* FILM STRIP — Filmography timeline */}
+      <section className="py-20 border-y border-frame-gray/20 overflow-hidden">
+        <div className="marquee-track">
+          {filmography.concat(filmography).map((f, i) => (
+            <div key={i} className="flex items-center gap-4 mx-8 group cursor-default">
+              <span className="mono text-xs text-frame-gold/40">{f.year}</span>
+              <span className="text-sm text-frame-light group-hover:text-frame-cream transition-colors">{f.title}</span>
+              <span className="text-xs text-frame-light/30">dir. {f.dir}</span>
+              <span className="text-frame-gold/20">•</span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* FOUR-PHASE PIPELINE */}
-      <section className="py-24 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">The Four-Phase Pipeline</h2>
-            <p className="text-frame-light text-lg max-w-xl mx-auto">
-              Every project moves through four phases. Each gate ensures production readiness.
-            </p>
+      {/* FOUR-PHASE PIPELINE — Cinematic cards */}
+      <section className="py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <span className="mono text-[10px] tracking-[0.5em] text-frame-gold/50 uppercase block mb-4">The Pipeline</span>
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tight">Four Phases.<br />One Platform.</h2>
           </div>
 
-          {/* Phase selector */}
-          <div className="flex justify-center gap-2 mb-12">
-            {phases.map((p, i) => (
-              <button
-                key={i}
-                onClick={() => setActivePhase(i)}
-                className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-                  activePhase === i
-                    ? 'bg-frame-gold text-frame-black'
-                    : 'bg-frame-gray/50 text-frame-light hover:bg-frame-gray hover:text-frame-cream'
-                }`}
-              >
-                {p.num}. {p.name}
-              </button>
+          <div className="grid md:grid-cols-4 gap-4">
+            {[
+              { num: 'I', name: 'Spark', tag: 'The idea ignites', desc: 'Post logline. Crew vouches. Heat score builds.', color: 'from-blue-500/10 to-blue-900/5', border: 'hover:border-blue-500/30', icon: '🔥' },
+              { num: 'II', name: 'Blueprint', tag: 'The plan takes shape', desc: 'Script, mood board, milestones, crew roster.', color: 'from-purple-500/10 to-purple-900/5', border: 'hover:border-purple-500/30', icon: '📐' },
+              { num: 'III', name: 'Market', tag: 'The crew assembles', desc: 'Proximity Engine. Gear meets need. Portfolios.', color: 'from-amber-500/10 to-amber-900/5', border: 'hover:border-amber-500/30', icon: '📍' },
+              { num: 'IV', name: 'Patronage', tag: 'The film gets funded', desc: 'Line-item funding. Escrow. Milestone proof.', color: 'from-emerald-500/10 to-emerald-900/5', border: 'hover:border-emerald-500/30', icon: '💰' },
+            ].map((phase, i) => (
+              <div key={i} className={`group relative card-hover rounded-2xl p-6 bg-gradient-to-b ${phase.color} border border-frame-gray/30 ${phase.border} transition-all duration-700`}>
+                <div className="mono text-xs text-frame-light/30 mb-4">PHASE {phase.num}</div>
+                <div className="text-3xl mb-3">{phase.icon}</div>
+                <h3 className="text-xl font-bold mb-1">{phase.name}</h3>
+                <p className="text-xs italic text-frame-light/60 mb-3">{phase.tag}</p>
+                <p className="text-sm text-frame-light">{phase.desc}</p>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Active phase detail */}
-          <div className="bg-frame-dark rounded-2xl p-8 md:p-12 border border-frame-gray/50 animate-fade-in" key={activePhase}>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="text-frame-gold/40 text-sm font-mono tracking-widest mb-2">PHASE {phases[activePhase].num}</div>
-                <h3 className="text-4xl font-bold mb-2">{phases[activePhase].name}</h3>
-                <p className="text-frame-gold text-lg mb-4 italic">{phases[activePhase].tagline}</p>
-                <p className="text-frame-light leading-relaxed mb-8">{phases[activePhase].desc}</p>
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-frame-gold/10 rounded-lg border border-frame-gold/20">
-                  <svg className="w-4 h-4 text-frame-gold" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-sm text-frame-gold">Gate: {phases[activePhase].gate}</span>
-                </div>
+      {/* FOR CREATIVES */}
+      <section className="py-32 px-6 bg-gradient-to-b from-frame-dark/50 to-transparent">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div>
+              <span className="mono text-[10px] tracking-[0.5em] text-frame-gold/50 uppercase block mb-4">For Filmmakers</span>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                Stop managing your film across<br />
+                <span className="text-gradient italic">five different tools.</span>
+              </h2>
+              <p className="text-frame-light leading-relaxed mb-8">
+                X for pitching. LinkedIn for crew. Drive for files. Kickstarter for funding. 
+                Email for everything else. Frame replaces all of it — starting with a simple 
+                spark and ending with a funded production.
+              </p>
+              <div className="space-y-4">
+                {[
+                  { icon: '🔥', text: 'Post a Spark — attract crew before any heavy planning' },
+                  { icon: '📐', text: 'Build your Blueprint — script, moodboard, milestones' },
+                  { icon: '🎒', text: 'List your Gear Locker — let nearby projects find you' },
+                  { icon: '💰', text: 'Get funded — milestone-based, quality-gated campaigns' },
+                ].map((f, i) => (
+                  <div key={i} className="flex items-center gap-3 text-sm">
+                    <span className="text-lg">{f.icon}</span>
+                    <span className="text-frame-light">{f.text}</span>
+                  </div>
+                ))}
               </div>
-              <div className="bg-frame-black rounded-xl p-6 border border-frame-gray/30">
-                {/* Phase preview mockup */}
-                {activePhase === 0 && <SparkPreview />}
-                {activePhase === 1 && <BlueprintPreview />}
-                {activePhase === 2 && <MarketPreview />}
-                {activePhase === 3 && <PatronagePreview />}
+              <a href="/feed" className="inline-flex items-center gap-2 mt-8 bg-frame-gold text-frame-black px-8 py-4 rounded-xl font-semibold hover:bg-frame-gold/90 transition-all duration-300 glow-gold hover:glow-gold-strong btn-press">
+                Start Creating
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </a>
+            </div>
+            <div className="relative">
+              <div className="bg-frame-dark rounded-2xl p-6 border border-frame-gray/30">
+                <div className="mono text-xs text-frame-light/30 mb-4">LIVE SPARK FEED</div>
+                {[
+                  { title: 'Echoes of Silence', heat: 89, vouches: 48 },
+                  { title: 'The Last Blockbuster', heat: 76, vouches: 41 },
+                  { title: 'Night Shift', heat: 67, vouches: 34 },
+                ].map((s, i) => (
+                  <div key={i} className={`flex items-center justify-between p-4 rounded-xl mb-2 ${i === 0 ? 'bg-frame-gold/5 border border-frame-gold/20' : 'bg-frame-gray/20'}`}>
+                    <div>
+                      <div className="font-medium text-sm">{s.title}</div>
+                      <div className="text-xs text-frame-light">{s.vouches} vouches</div>
+                    </div>
+                    <div className={`mono text-lg font-bold ${i === 0 ? 'text-frame-gold animate-flicker' : 'text-frame-light'}`}>
+                      {s.heat}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* THESIS */}
-      <section className="py-24 px-6 bg-frame-dark/50">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 leading-snug">
-            Frame is NOT a social network.<br />
-            NOT a crowdfunding site.<br />
-            NOT a job board.<br />
-            <span className="text-frame-gold">It's a production OS.</span>
-          </h2>
-          <p className="text-frame-light text-lg leading-relaxed max-w-2xl mx-auto">
-            The project is the primary object. Social proof, crew matching, and funding all serve it. 
-            Physical gear and geographic proximity create a moat against AI-generated synthetic noise.
-          </p>
-        </div>
-      </section>
-
-      {/* FEATURES GRID */}
-      <section className="py-24 px-6">
+      {/* FOR PRODUCERS */}
+      <section className="py-32 px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16">Built for Real Filmmakers</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { icon: '🔥', title: 'Heat Score', desc: 'Weighted vouch-velocity metric. 50 crew vouches outrank 500 passive likes.' },
-              { icon: '🎒', title: 'Gear Locker', desc: 'List your owned equipment. Demand signals show what nearby projects need.' },
-              { icon: '📍', title: 'Proximity Engine', desc: 'Find crew within 50 miles whose gear matches your production needs.' },
-              { icon: '📚', title: 'IP Library', desc: '2,000+ public domain works searchable by genre, era, and theme.' },
-              { icon: '🎬', title: 'Script Analysis', desc: 'Upload .PDF or .fountain. Auto-extract locations, scenes, cast size.' },
-              { icon: '💰', title: 'Line-Item Funding', desc: 'Backers fund specific budget items in escrow. Funds release on milestone proof.' },
-            ].map((f, i) => (
-              <div key={i} className="card-lift bg-frame-dark rounded-xl p-6 border border-frame-gray/50">
-                <div className="text-3xl mb-4">{f.icon}</div>
-                <h3 className="text-xl font-bold mb-2">{f.title}</h3>
-                <p className="text-sm text-frame-light leading-relaxed">{f.desc}</p>
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="order-2 md:order-1 relative">
+              <div className="bg-frame-dark rounded-2xl p-6 border border-frame-gray/30">
+                <div className="mono text-xs text-frame-light/30 mb-4">FUNDING DASHBOARD</div>
+                <div className="mb-4">
+                  <div className="text-3xl font-bold text-frame-gold mb-1">$127,400</div>
+                  <div className="text-xs text-frame-light">Across 3 active campaigns</div>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    { title: 'Echoes of Silence', progress: 72, funded: '$32.4K', goal: '$45K' },
+                    { title: 'Dirt Road Hymnal', progress: 100, funded: '$12K', goal: '$12K' },
+                    { title: 'Frequency', progress: 34, funded: '$17K', goal: '$50K' },
+                  ].map((c, i) => (
+                    <div key={i} className="p-3 rounded-xl bg-frame-gray/20">
+                      <div className="flex justify-between text-sm mb-2">
+                        <span>{c.title}</span>
+                        <span className="mono text-frame-gold">{c.funded}</span>
+                      </div>
+                      <div className="h-1.5 bg-frame-gray/50 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-frame-gold-dim to-frame-gold rounded-full progress-fill" style={{ width: `${c.progress}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
+            </div>
+            <div className="order-1 md:order-2">
+              <span className="mono text-[10px] tracking-[0.5em] text-frame-gold/50 uppercase block mb-4">For Producers & Backers</span>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                Fund what's real.<br />
+                <span className="text-gradient italic">Not what's hyped.</span>
+              </h2>
+              <p className="text-frame-light leading-relaxed mb-8">
+                Every project on Frame has a real team, a real script, and a real plan 
+                before funding opens. Quality gates ensure you're backing productions 
+                that can actually deliver.
+              </p>
+              <div className="space-y-4">
+                {[
+                  { icon: '🎬', text: 'Browse vetted projects with real crews attached' },
+                  { icon: '📋', text: 'Fund specific budget line items — camera, locations, cast' },
+                  { icon: '🔒', text: 'Escrow-protected — funds release on milestone proof' },
+                  { icon: '📊', text: 'Track production progress in real-time' },
+                ].map((f, i) => (
+                  <div key={i} className="flex items-center gap-3 text-sm">
+                    <span className="text-lg">{f.icon}</span>
+                    <span className="text-frame-light">{f.text}</span>
+                  </div>
+                ))}
+              </div>
+              <a href="/discover-producer" className="inline-flex items-center gap-2 mt-8 border border-frame-gold/30 text-frame-gold px-8 py-4 rounded-xl font-semibold hover:bg-frame-gold/10 transition-all duration-300 btn-press">
+                Browse Projects
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Stop patching five tools together.
+      <section className="py-32 px-6">
+        <div className="max-w-4xl mx-auto text-center">
+          <span className="mono text-[10px] tracking-[0.5em] text-frame-gold/50 uppercase block mb-6">Join Frame</span>
+          <h2 className="text-5xl md:text-7xl font-bold mb-8 leading-tight tracking-tight">
+            For the people who make films<br />
+            <span className="italic text-gradient">nobody told them they could make.</span>
           </h2>
-          <p className="text-xl text-frame-light mb-10 leading-relaxed">
-            X for pitching. LinkedIn for crew. Kickstarter for funding. Drive for files. Email for everything else.<br />
-            <strong className="text-frame-cream">Frame replaces all of it.</strong>
-          </p>
-          <a href="/signup" className="inline-block bg-frame-gold text-frame-black px-10 py-4 rounded-lg text-lg font-semibold hover:bg-frame-gold/90 transition-all duration-300 hover:shadow-[0_0_30px_rgba(201,162,39,0.3)]">
-            Join Frame — It's Free
-          </a>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/signup?role=creative" className="bg-frame-gold text-frame-black px-10 py-4 rounded-xl text-lg font-semibold hover:bg-frame-gold/90 transition-all duration-300 glow-gold hover:glow-gold-strong btn-press">
+              I Make Films
+            </a>
+            <a href="/signup?role=producer" className="border border-frame-gold/30 text-frame-cream px-10 py-4 rounded-xl text-lg hover:bg-frame-gold/5 transition-all duration-300 btn-press">
+              I Fund Films
+            </a>
+          </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-frame-gray/30 py-12 px-6">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 bg-frame-gold rounded flex items-center justify-center">
-              <span className="text-frame-black font-bold text-xs">F</span>
+      <footer className="border-t border-frame-gray/20 py-16 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-12">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 bg-frame-gold rounded flex items-center justify-center">
+                  <span className="text-frame-black font-bold text-sm" style={{ fontFamily: 'DM Serif Display, serif' }}>F</span>
+                </div>
+                <span className="text-lg font-bold" style={{ fontFamily: 'DM Serif Display, serif' }}>FRAME</span>
+              </div>
+              <p className="text-sm text-frame-light max-w-xs">Make the film. Now.<br />The Operating System for Indie Film.</p>
             </div>
-            <span className="text-sm text-frame-light">Frame — Make the film. Now.</span>
+            <div className="grid grid-cols-3 gap-12 text-sm">
+              <div className="space-y-3">
+                <div className="text-frame-light/50 uppercase tracking-wider text-xs mb-3">Platform</div>
+                <a href="/feed" className="block text-frame-light hover:text-frame-cream transition">Spark Feed</a>
+                <a href="/discover" className="block text-frame-light hover:text-frame-cream transition">Crew Market</a>
+                <a href="/funding" className="block text-frame-light hover:text-frame-cream transition">Funding</a>
+                <a href="/tools" className="block text-frame-light hover:text-frame-cream transition">Production Tools</a>
+              </div>
+              <div className="space-y-3">
+                <div className="text-frame-light/50 uppercase tracking-wider text-xs mb-3">Company</div>
+                <a href="/about" className="block text-frame-light hover:text-frame-cream transition">About</a>
+                <a href="/careers" className="block text-frame-light hover:text-frame-cream transition">Careers</a>
+                <a href="/press" className="block text-frame-light hover:text-frame-cream transition">Press</a>
+              </div>
+              <div className="space-y-3">
+                <div className="text-frame-light/50 uppercase tracking-wider text-xs mb-3">Legal</div>
+                <a href="/terms" className="block text-frame-light hover:text-frame-cream transition">Terms</a>
+                <a href="/privacy" className="block text-frame-light hover:text-frame-cream transition">Privacy</a>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-8 text-sm text-frame-light">
-            <a href="/about" className="hover:text-frame-cream transition">About</a>
-            <a href="/terms" className="hover:text-frame-cream transition">Terms</a>
-            <a href="/privacy" className="hover:text-frame-cream transition">Privacy</a>
+          <div className="flex items-center justify-between pt-8 border-t border-frame-gray/20">
+            <span className="text-xs text-frame-light/30">© 2024 Frame. All rights reserved.</span>
+            <span className="text-xs text-frame-light/30 mono">v1.1</span>
           </div>
         </div>
       </footer>
-    </div>
-  )
-}
-
-/* Phase preview components */
-function SparkPreview() {
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-        <span className="text-xs text-blue-400 uppercase tracking-wider">Live Spark Feed</span>
-      </div>
-      {[
-        { title: 'Echoes of Silence', genre: 'Drama', vouches: 34, heat: 67 },
-        { title: 'The Last Blockbuster', genre: 'Documentary', vouches: 48, heat: 89 },
-        { title: 'Night Shift', genre: 'Thriller', vouches: 12, heat: 23 },
-      ].map((s, i) => (
-        <div key={i} className="flex items-center justify-between p-3 bg-frame-gray/30 rounded-lg">
-          <div>
-            <div className="text-sm font-medium">{s.title}</div>
-            <div className="text-xs text-frame-light">{s.genre}</div>
-          </div>
-          <div className="text-right">
-            <div className="text-sm text-frame-gold font-mono">🔥 {s.heat}</div>
-            <div className="text-xs text-frame-light">{s.vouches} vouches</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function BlueprintPreview() {
-  return (
-    <div className="space-y-4">
-      <div className="text-xs text-purple-400 uppercase tracking-wider mb-2">Blueprint Dashboard</div>
-      <div className="grid grid-cols-2 gap-3">
-        {[
-          { label: 'Script', status: 'Uploaded', done: true },
-          { label: 'Mood Board', status: '4 images', done: true },
-          { label: 'IP Reference', status: 'Linked', done: true },
-          { label: 'Crew Roster', status: '3/7 filled', done: false },
-        ].map((item, i) => (
-          <div key={i} className={`p-3 rounded-lg border ${item.done ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-frame-gray/30 border-frame-gray/50'}`}>
-            <div className="text-sm font-medium">{item.label}</div>
-            <div className={`text-xs ${item.done ? 'text-emerald-400' : 'text-frame-light'}`}>{item.status}</div>
-          </div>
-        ))}
-      </div>
-      <div className="h-2 bg-frame-gray/50 rounded-full overflow-hidden">
-        <div className="h-full bg-purple-500 rounded-full progress-fill" style={{ width: '65%' }} />
-      </div>
-      <div className="text-xs text-frame-light text-center">4 of 6 milestones complete</div>
-    </div>
-  )
-}
-
-function MarketPreview() {
-  return (
-    <div className="space-y-3">
-      <div className="text-xs text-amber-400 uppercase tracking-wider mb-2">Nearby Crew Matches</div>
-      {[
-        { name: 'Sarah K.', role: 'DP', dist: '12mi', gear: 'RED Komodo', match: 94 },
-        { name: 'Mike R.', role: 'Gaffer', dist: '8mi', gear: 'Aputure 600d', match: 87 },
-        { name: 'Ana L.', role: 'Sound', dist: '23mi', gear: 'Sound Devices MixPre', match: 72 },
-      ].map((c, i) => (
-        <div key={i} className="flex items-center justify-between p-3 bg-frame-gray/30 rounded-lg">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-frame-gray rounded-full flex items-center justify-center text-xs text-frame-gold">
-              {c.name.split(' ').map(n => n[0]).join('')}
-            </div>
-            <div>
-              <div className="text-sm font-medium">{c.name} <span className="text-frame-light">· {c.role}</span></div>
-              <div className="text-xs text-frame-light">{c.gear} · {c.dist}</div>
-            </div>
-          </div>
-          <div className="text-sm text-frame-gold font-mono">{c.match}%</div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-function PatronagePreview() {
-  return (
-    <div className="space-y-3">
-      <div className="text-xs text-green-400 uppercase tracking-wider mb-2">Funding Progress</div>
-      <div className="text-2xl font-bold text-frame-gold mb-1">$32,400 <span className="text-sm text-frame-light font-normal">of $45,000</span></div>
-      <div className="h-3 bg-frame-gray/50 rounded-full overflow-hidden mb-4">
-        <div className="h-full bg-gradient-to-r from-frame-gold-dim to-frame-gold rounded-full progress-fill" style={{ width: '72%' }} />
-      </div>
-      <div className="space-y-2">
-        {[
-          { item: 'Camera Package', amount: 8000, funded: true },
-          { item: 'Location Fees', amount: 5000, funded: true },
-          { item: 'Cast & Crew', amount: 15000, funded: false },
-          { item: 'Post-Production', amount: 12000, funded: false },
-        ].map((line, i) => (
-          <div key={i} className="flex items-center justify-between text-sm">
-            <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-sm ${line.funded ? 'bg-frame-gold' : 'bg-frame-gray/50'}`} />
-              <span className={line.funded ? 'text-frame-cream' : 'text-frame-light'}>{line.item}</span>
-            </div>
-            <span className="text-frame-light">${line.amount.toLocaleString()}</span>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }
