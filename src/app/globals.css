@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --frame-black: #0a0a0a;
+  --frame-dark: #1a1a1a;
+  --frame-gray: #2a2a2a;
+  --frame-gold: #c9a227;
+  --frame-cream: #f5f0e8;
+}
+
+body {
+  background: var(--frame-black);
+  color: var(--frame-cream);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--frame-dark); }
+::-webkit-scrollbar-thumb { background: var(--frame-gray); border-radius: 3px; }
+
+/* Stage badges */
+.stage-idea { @apply bg-blue-500/20 text-blue-400 border border-blue-500/30; }
+.stage-development { @apply bg-purple-500/20 text-purple-400 border border-purple-500/30; }
+.stage-project { @apply bg-amber-500/20 text-amber-400 border border-amber-500/30; }
+.stage-funding { @apply bg-green-500/20 text-green-400 border border-green-500/30; }
+.stage-production { @apply bg-red-500/20 text-red-400 border border-red-500/30; }
