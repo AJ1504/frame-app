@@ -132,8 +132,8 @@ export default function Home() {
           {/* TITLE with light leak */}
           <h1 className="animate-fade-up initial-hidden d-400 light-leak mb-6">
             <span className="block text-7xl md:text-9xl lg:text-[10rem] font-black leading-[0.85] tracking-tight">MAKE THE</span>
-            <span className="block text-7xl md:text-9xl lg:text-[10rem] font-black italic leading-[0.85] tracking-tight text-gradient">FILM.</span>
-            <span className="block text-7xl md:text-9xl lg:text-[10rem] font-black italic leading-[0.85] tracking-tight" style={{ color: '#c9a961' }}>NOW.</span>
+            <span className="block text-7xl md:text-9xl lg:text-[10rem] font-black italic leading-[0.85] tracking-tight text-gradient">FILM</span>
+            <span className="block text-7xl md:text-9xl lg:text-[10rem] font-black italic leading-[0.85] tracking-tight" style={{ color: '#c9a961' }}>NOW</span>
           </h1>
 
           {/* Script subtext */}
