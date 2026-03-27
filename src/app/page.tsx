@@ -202,7 +202,6 @@ export default function Home() {
             <div key={i} className="flex items-center gap-3 mx-8 group cursor-default">
               <span className="mono text-[10px] text-frame-gold/40">{f.year}</span>
               <span className="text-sm text-frame-light/40 group-hover:text-frame-cream transition-colors">{f.title}</span>
-              <span className="text-frame-gold/10 text-xl">•</span>
             </div>
           ))}
         </div>
