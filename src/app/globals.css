@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Bebas+Neue&display=swap');
 
 :root {
   --frame-black: #050505;
@@ -16,6 +16,7 @@
   --frame-sage: #5a8c6a;
   --frame-rust: #b44a3f;
   --frame-blue: #5a7fa5;
+  --frame-amber: #d4a843;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,93 +33,211 @@ h1, h2, h3, h4, h5, h6, .serif {
 }
 
 .mono { font-family: 'JetBrains Mono', monospace; }
+.display { font-family: 'Bebas Neue', sans-serif; }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
-
-/* Film grain overlay */
+/* ========== FILM GRAIN ========== */
 .film-grain::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 9999;
   pointer-events: none;
-  opacity: 0.035;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grainShift 0.5s steps(1) infinite;
 }
 
-/* Animations */
-@keyframes reveal {
-  from { clip-path: inset(0 100% 0 0); }
-  to { clip-path: inset(0 0 0 0); }
+@keyframes grainShift {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(-1%, -1%); }
+  20% { transform: translate(1%, 0%); }
+  30% { transform: translate(0%, 1%); }
+  40% { transform: translate(-1%, 1%); }
+  50% { transform: translate(1%, -1%); }
+  60% { transform: translate(-1%, 0%); }
+  70% { transform: translate(0%, -1%); }
+  80% { transform: translate(1%, 1%); }
+  90% { transform: translate(-1%, -1%); }
+  100% { transform: translate(0, 0); }
 }
 
+/* ========== LETTERBOX BARS ========== */
+.letterbox::before,
+.letterbox::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 12%;
+  background: var(--frame-black);
+  z-index: 10;
+  pointer-events: none;
+}
+.letterbox::before { top: 0; }
+.letterbox::after { bottom: 0; }
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+/* ========== ANIMATIONS ========== */
+
+/* Clapperboard snap */
+@keyframes clapSnap {
+  0% { clip-path: inset(0 100% 0 0); opacity: 0; }
+  15% { clip-path: inset(0 60% 0 0); opacity: 1; }
+  30% { clip-path: inset(0 30% 0 0); }
+  50% { clip-path: inset(0 0 0 0); }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+
+/* Film countdown */
+@keyframes filmCountdown {
+  0% { opacity: 0; transform: scale(2) rotate(-10deg); }
+  20% { opacity: 1; transform: scale(1) rotate(0deg); }
+  80% { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(0.8) rotate(5deg); }
+}
+
+/* Fade up with stagger */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(40px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Fade in */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
+/* Scale in */
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
 
-@keyframes slideRight {
-  from { opacity: 0; transform: translateX(-30px); }
+/* Slide from left */
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(-40px); }
   to { opacity: 1; transform: translateX(0); }
 }
 
+/* Slide from right */
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Marquee */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
 
-@keyframes pulse-gold {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.3); }
-  50% { box-shadow: 0 0 0 12px rgba(201, 162, 39, 0); }
+/* Spotlight sweep */
+@keyframes spotlightSweep {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
 }
 
+/* Flicker (old projector) */
 @keyframes flicker {
   0%, 100% { opacity: 1; }
   92% { opacity: 1; }
-  93% { opacity: 0.8; }
+  93% { opacity: 0.85; }
   94% { opacity: 1; }
   96% { opacity: 0.9; }
   97% { opacity: 1; }
 }
 
-@keyframes counter {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Shutter click */
+@keyframes shutter {
+  0% { transform: scaleY(1); }
+  15% { transform: scaleY(0); }
+  30% { transform: scaleY(1); }
+  100% { transform: scaleY(1); }
 }
 
-.animate-reveal { animation: reveal 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards; }
+/* Lens flare */
+@keyframes lensFlare {
+  0% { opacity: 0; transform: translateX(-100%) rotate(0deg); }
+  50% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateX(200%) rotate(10deg); }
+}
+
+/* Typewriter */
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+/* Rotate in */
+@keyframes rotateIn {
+  from { opacity: 0; transform: rotate(-180deg) scale(0); }
+  to { opacity: 1; transform: rotate(0deg) scale(1); }
+}
+
+/* Pulse glow */
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.3); }
+  50% { box-shadow: 0 0 0 15px rgba(201, 162, 39, 0); }
+}
+
+/* Breathe */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Film strip advance */
+@keyframes filmAdvance {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-24px); }
+}
+
+/* ========== ANIMATION CLASSES ========== */
+.animate-clap { animation: clapSnap 1s cubic-bezier(0.77, 0, 0.175, 1) forwards; }
 .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 .animate-fade-in { animation: fadeIn 0.6s ease forwards; }
 .animate-scale-in { animation: scaleIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-slide-left { animation: slideLeft 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 .animate-slide-right { animation: slideRight 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 .animate-flicker { animation: flicker 4s infinite; }
-.animate-marquee { animation: marquee 30s linear infinite; }
-
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
-.delay-500 { animation-delay: 0.5s; }
-.delay-600 { animation-delay: 0.6s; }
-.delay-700 { animation-delay: 0.7s; }
-.delay-800 { animation-delay: 0.8s; }
+.animate-shutter { animation: shutter 0.5s ease; }
+.animate-marquee { animation: marquee 40s linear infinite; }
+.animate-marquee:hover { animation-play-state: paused; }
+.animate-pulse-glow { animation: pulseGlow 2s infinite; }
+.animate-breathe { animation: breathe 4s ease-in-out infinite; }
+.animate-rotate-in { animation: rotateIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-spotlight {
+  background: linear-gradient(90deg, transparent 0%, rgba(201,162,39,0.05) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: spotlightSweep 3s ease-in-out infinite;
+}
 
 .initial-hidden { opacity: 0; }
 
-/* Card interactions */
+.d-100 { animation-delay: 0.1s; }
+.d-200 { animation-delay: 0.2s; }
+.d-300 { animation-delay: 0.3s; }
+.d-400 { animation-delay: 0.4s; }
+.d-500 { animation-delay: 0.5s; }
+.d-600 { animation-delay: 0.6s; }
+.d-700 { animation-delay: 0.7s; }
+.d-800 { animation-delay: 0.8s; }
+.d-900 { animation-delay: 0.9s; }
+.d-1000 { animation-delay: 1.0s; }
+.d-1200 { animation-delay: 1.2s; }
+
+/* ========== INTERACTIVE ELEMENTS ========== */
+
+/* Card hover lift */
 .card-hover {
   transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -132,14 +251,13 @@ h1, h2, h3, h4, h5, h6, .serif {
   transition: all 0.15s ease;
 }
 .btn-press:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
 /* Glow effects */
 .glow-gold {
   box-shadow: 0 0 20px rgba(201, 162, 39, 0.15), 0 0 60px rgba(201, 162, 39, 0.05);
 }
-
 .glow-gold-strong {
   box-shadow: 0 0 30px rgba(201, 162, 39, 0.3), 0 0 80px rgba(201, 162, 39, 0.1);
 }
@@ -149,23 +267,7 @@ h1, h2, h3, h4, h5, h6, .serif {
   transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Marquee track */
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 40s linear infinite;
-}
-.marquee-track:hover {
-  animation-play-state: paused;
-}
-
-/* Split text reveal */
-.text-reveal {
-  clip-path: inset(0 100% 0 0);
-  animation: reveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-}
-
-/* Glass */
+/* Glass morphism */
 .glass {
   background: rgba(13, 13, 13, 0.85);
   backdrop-filter: blur(20px) saturate(1.2);
@@ -177,11 +279,11 @@ h1, h2, h3, h4, h5, h6, .serif {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.5) 100%);
   pointer-events: none;
 }
 
-/* Typography effects */
+/* ========== TEXT EFFECTS ========== */
 .text-gradient {
   background: linear-gradient(135deg, #f5f0e8 0%, #c9a227 100%);
   -webkit-background-clip: text;
@@ -192,4 +294,222 @@ h1, h2, h3, h4, h5, h6, .serif {
 .text-outline {
   -webkit-text-stroke: 1px rgba(201, 162, 39, 0.3);
   color: transparent;
+}
+
+/* Typewriter effect */
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid var(--frame-gold);
+  white-space: nowrap;
+  animation: typewriter 3s steps(40) 1s forwards, blink 0.7s step-end infinite;
+  width: 0;
+}
+
+/* ========== FILM SET UI ELEMENTS ========== */
+
+/* Clapperboard header */
+.clap-header {
+  position: relative;
+  padding-left: 20px;
+  border-left: 4px solid var(--frame-gold);
+}
+.clap-header::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: repeating-linear-gradient(
+    0deg,
+    var(--frame-gold) 0px,
+    var(--frame-gold) 8px,
+    var(--frame-black) 8px,
+    var(--frame-black) 16px
+  );
+}
+
+/* Film strip border */
+.film-strip-border {
+  position: relative;
+}
+.film-strip-border::before,
+.film-strip-border::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 24px;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 8px,
+    rgba(201,162,39,0.1) 8px,
+    rgba(201,162,39,0.1) 16px,
+    transparent 16px,
+    transparent 20px
+  );
+}
+.film-strip-border::before { left: 0; }
+.film-strip-border::after { right: 0; }
+
+/* Scene slate */
+.scene-slate {
+  background: var(--frame-dark);
+  border: 2px solid var(--frame-gray);
+  position: relative;
+  overflow: hidden;
+}
+.scene-slate::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--frame-gold) 0px,
+    var(--frame-gold) 20px,
+    var(--frame-black) 20px,
+    var(--frame-black) 40px
+  );
+}
+
+/* Director's viewfinder (viewfinder circle on hover) */
+.viewfinder {
+  position: relative;
+}
+.viewfinder::after {
+  content: '+';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  font-size: 40px;
+  color: rgba(201, 162, 39, 0.4);
+  transition: transform 0.3s ease;
+  pointer-events: none;
+}
+.viewfinder:hover::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Call sheet card */
+.call-sheet {
+  background: var(--frame-dark);
+  border: 1px solid var(--frame-gray);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  position: relative;
+}
+.call-sheet::after {
+  content: 'CALL SHEET';
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: var(--frame-dark);
+  padding: 0 8px;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--frame-gold);
+}
+
+/* Action text */
+.action-text {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Set practical light */
+.practical-light {
+  position: relative;
+}
+.practical-light::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 20px;
+  background: var(--frame-light);
+}
+.practical-light::after {
+  content: '';
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 4px;
+  background: var(--frame-gold);
+  border-radius: 2px;
+  box-shadow: 0 4px 20px rgba(201, 162, 39, 0.3);
+}
+
+/* Film frame corners */
+.frame-corners {
+  position: relative;
+}
+.frame-corners::before,
+.frame-corners::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: rgba(201, 162, 39, 0.3);
+  border-style: solid;
+}
+.frame-corners::before {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+.frame-corners::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+/* Spotlight cursor effect */
+.spotlight-cursor {
+  background: radial-gradient(circle 200px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(201,162,39,0.03) 0%, transparent 100%);
+}
+
+/* ========== FILM TIMELINE ========== */
+.timeline-strip {
+  position: relative;
+  padding-left: 40px;
+}
+.timeline-strip::before {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--frame-gold) 0px,
+    var(--frame-gold) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+}
+
+/* ========== SCROLLBAR TRACK ========== */
+.scroll-track {
+  position: relative;
+}
+.scroll-track::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--frame-gold), transparent);
+  opacity: 0.3;
 }
