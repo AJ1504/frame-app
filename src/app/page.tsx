@@ -337,7 +337,7 @@ export default function Home() {
               </div>
               <span className="display text-lg tracking-[0.2em]">FRAME</span>
             </div>
-            <p className="script text-[11px] text-frame-light/25 italic">Make the film. Now.</p>
+            <p className="script text-[11px] text-frame-light/25 italic">Make the film Now</p>
             <span className="mono text-[9px] text-frame-gold/20">v1.1</span>
           </div>
         </div>
