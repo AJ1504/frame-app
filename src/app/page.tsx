@@ -121,12 +121,10 @@ export default function Home() {
                 <span className="action-text text-[9px] text-frame-burgundy-light/60">SCENE</span>
                 <span className="mono text-[11px] text-frame-cream/50">001</span>
               </div>
-              <div className="w-px h-4 bg-frame-gray" />
               <div className="flex items-center gap-2">
                 <span className="action-text text-[9px] text-frame-burgundy-light/60">TAKE</span>
                 <span className="mono text-[11px] text-frame-cream/50">∞</span>
               </div>
-              <div className="w-px h-4 bg-frame-gray" />
               <span className="script text-[10px] text-frame-gold/40 italic">The Operating System for Indie Film</span>
             </div>
           </div>
